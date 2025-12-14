@@ -188,7 +188,7 @@
   }
 
   .hero-inner {
-      height: 795px;
+      height: 900px;
       position: relative;
       width: 100%;
       min-height: 420px;
@@ -1303,6 +1303,20 @@
     margin: 0 0 0.35rem;
     font-size: 1rem;
   }
+
+  .product-price { font-size:.9rem; font-weight:800; color: var(--primary); }
+  .product-price-old { font-size:.85rem; color: var(--muted); text-decoration: line-through; margin-left: .35rem; font-weight:600; }
+  .btn-view{
+    flex:1;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid #e5e7eb;
+    background:#fff;
+    font-size: .85rem;
+    font-weight:800;
+    cursor:pointer;
+    text-align:center;
+  }
+  .btn-view:hover{ background:#fdf2fb; }
 
 
 

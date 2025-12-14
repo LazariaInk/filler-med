@@ -110,17 +110,17 @@
             }, 3200);
         })();
 
-        // Burger
-        (function () {
-            const burger = document.getElementById("burgerBtn");
-            const headerNav = document.querySelector(".header-bottom");
-            if (!burger || !headerNav) return;
+<!--        // Burger-->
+<!--        (function () {-->
+<!--            const burger = document.getElementById("burgerBtn");-->
+<!--            const headerNav = document.querySelector(".header-bottom");-->
+<!--            if (!burger || !headerNav) return;-->
 
-            burger.addEventListener("click", () => {
-                const isOpen = headerNav.classList.toggle("is-open");
-                burger.classList.toggle("is-open", isOpen);
-                document.body.classList.toggle("nav-open", isOpen);
-            });
+<!--            burger.addEventListener("click", () => {-->
+<!--                const isOpen = headerNav.classList.toggle("is-open");-->
+<!--                burger.classList.toggle("is-open", isOpen);-->
+<!--                document.body.classList.toggle("nav-open", isOpen);-->
+<!--            });-->
 
             window.addEventListener("resize", () => {
                 if (window.innerWidth > 640 && headerNav.classList.contains("is-open")) {

@@ -1,5 +1,6 @@
 package com.lazari.filler_med.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    @Value("${app.security.admin.username}")
+    private String adminUsername;
+
+    @Value("${app.security.admin.password}")
+    private String adminPassword;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -22,16 +29,18 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form.permitAll())
                 .logout(logout -> logout.permitAll());
+
         return http.build();
     }
 
     @Bean
     public UserDetailsService users(PasswordEncoder encoder) {
         UserDetails admin = User.builder()
-                .username("admin")
-                .password(encoder.encode("schimba-parola"))
+                .username(adminUsername)
+                .password(encoder.encode(adminPassword))
                 .roles("ADMIN")
                 .build();
+
         return new InMemoryUserDetailsManager(admin);
     }
 

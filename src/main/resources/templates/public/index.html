@@ -88,17 +88,54 @@
                 <article class="product-card" th:each="p : ${offers}">
                     <a class="product-image" th:href="@{'/produse/' + ${p.slug}}">
                         <img th:src="${p.primaryImage != null ? p.primaryImage.url : '/images/logo1.png'}"
-                             th:alt="${p.primaryImage != null && p.primaryImage.altText != null ? p.primaryImage.altText : p.title}">
+                             th:alt="${p.title}" loading="lazy">
                     </a>
 
-                    <span class="product-badge" th:if="${p.discountedPrice != null}">Ofertă specială</span>
+                    <!-- badge categorie (ca pe /produse) -->
+                    <div class="product-badge" th:text="${p.category != null ? p.category : 'Produs'}">Produs</div>
 
-                    <h3 class="product-name" th:text="${p.title}">Titlu produs</h3>
-                    <hr class="product-hr"/>
+                    <h3 class="product-name">
+                        <a th:href="@{'/produse/' + ${p.slug}}" th:text="${p.title}">Titlu produs</a>
+                    </h3>
+
+                    <!-- preț + preț vechi dacă e reducere -->
+                    <div style="margin-top:.1rem;">
+          <span class="product-price"
+                th:text="${p.discountedPrice != null ? p.discountedPrice : p.price}">0</span>
+                        <span style="font-weight:800;"> RON</span>
+
+                        <span class="product-price-old"
+                              th:if="${p.discountedPrice != null}"
+                              th:text="${p.price + ' RON'}">0 RON</span>
+                    </div>
+
+                    <hr class="product-hr" />
+
+                    <!-- descriere scurtă -->
+                    <div style="color: var(--muted); font-size:.85rem; line-height:1.35;"
+                         th:text="${p.shortDescription != null ? #strings.abbreviate(p.shortDescription, 120) : ''}">
+                        Descriere scurtă…
+                    </div>
 
                     <div class="product-actions">
-                        <a class="btn-add-cart" th:href="@{'/produse/' + ${p.slug}}">Vezi produs</a>
-                        <button class="btn-out-of-stock" type="button" th:if="${p.stock != null and p.stock == 0}">Stoc epuizat</button>
+                        <a class="btn-view" th:href="@{'/produse/' + ${p.slug}}">Vezi produsul</a>
+
+                        <!-- adaugă în coș dacă e pe stoc -->
+                        <form th:if="${p.stock != null && p.stock > 0}"
+                              th:action="@{/cos/add}" method="post" style="flex:1;">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="productId" th:value="${p.id}">
+                            <input type="hidden" name="qty" value="1">
+                            <input type="hidden" name="returnTo" th:value="@{/}">
+
+                            <button class="btn-add-cart" type="submit">Adaugă</button>
+                        </form>
+
+                        <!-- stoc epuizat -->
+                        <button class="btn-out-of-stock" type="button"
+                                th:if="${p.stock == null || p.stock == 0}">
+                            Stoc epuizat
+                        </button>
                     </div>
                 </article>
             </div>
