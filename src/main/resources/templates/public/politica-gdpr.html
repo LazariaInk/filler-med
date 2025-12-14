@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Politica GDPR - Fillermed</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<main>
+    <section class="legal-hero">
+        <div class="container">
+            <h1 class="legal-title">Politica GDPR</h1>
+            <p class="legal-subtitle">
+                Informații despre colectarea și prelucrarea datelor cu caracter personal.
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container legal-wrap">
+            <article class="legal-card">
+
+                <h2>1. Datele dumneavoastră</h2>
+                <p>
+                    FILLERMED SRL cu sediul în Oradea, Str. George Bacaloglu, identificată prin CUI: 42655596,
+                    nr. registru comerțului J05/961/2020 colectează și prelucrează date cu caracter personal,
+                    în conformitate cu dispozițiile Regulamentului U.E. 679/2016, atunci când vă înregistrați
+                    cu un cont pe site-ul nostru sau când plasați o comandă fără cont pe site sau telefonic.
+                </p>
+                <p>
+                    Aceste date sunt securizate și se transmit doar către firmele de curierat cu care colaborăm
+                    (atunci când este cazul) și/sau furnizorilor de la care achiziționăm piesele, cât și furnizorilor
+                    de servicii contabile. Acest transfer de date este securizat.
+                </p>
+                <p>
+                    Nu transferăm datele dumneavoastră către alți terți fără acordul dumneavoastră explicit
+                    și nu facem aceste date publice.
+                </p>
+
+                <h2>2. Ce date folosim?</h2>
+                <p>Datele colectate și prelucrate sunt:</p>
+                <ul class="legal-list">
+                    <li>Nume, prenume</li>
+                    <li>Număr de telefon</li>
+                    <li>Adresă de mail</li>
+                    <li>Adresă livrare</li>
+                    <li>Cod numeric personal și/sau seria și numărul buletinului/cărții de identitate</li>
+                    <li>Cont bancar</li>
+                </ul>
+
+                <h2>3. Scopul pentru care folosim datele</h2>
+                <p><strong>Servicii de vânzare / post-vânzare:</strong></p>
+                <ul class="legal-list">
+                    <li><strong>Numele și prenumele</strong> – pentru a vă putea identifica.</li>
+                    <li><strong>Numărul de telefon</strong> – pentru confirmarea comenzii, detalii, status expediere.</li>
+                    <li><strong>Adresa de email</strong> – informații despre comandă sau alternativă de contact.</li>
+                    <li><strong>Adresa de livrare</strong> – pentru livrare prin companiile de curierat.</li>
+                    <li><strong>CNP / CI</strong> – pentru facturare și servicii post-vânzare.</li>
+                </ul>
+
+                <h2>4. Terțe părți</h2>
+                <p>
+                    Avem încheiate contracte cu prestatori de servicii, iar aceștia pot avea acces la datele dvs.
+                    cu caracter personal, însă Fillermed.ro nu i-a autorizat să utilizeze sau să dezvăluie datele
+                    dvs. cu caracter personal decât în strictă legătură cu prestarea serviciilor lor.
+                </p>
+                <p>
+                    Colectăm informații în scopul de a monitoriza utilizarea de către dvs. a produselor și serviciilor.
+                    Furnizăm aceste informații unor terțe părți (de exemplu, furnizorilor de conținut și agențiilor de
+                    publicitate), dar nicio astfel de raportare către o terță parte nu va include informații ce pot
+                    identifica un client individual.
+                </p>
+                <p>
+                    Pentru publicitate relevantă, puteți vedea publicitate țintită online (publicitate pe baza de interese),
+                    inclusiv pe site, Google și rețele sociale. Renunțarea la acest tip de publicitate nu oprește reclamele,
+                    dar acestea nu vor mai fi individualizate.
+                </p>
+
+                <h2>5. Durata stocării datelor</h2>
+                <p>
+                    Datele dumneavoastră sunt stocate într-o bază de date internă, securizată pentru 5 ani pentru a putea
+                    menține istoricul comenzilor, pentru a vă putea trimite oferte și/sau informații adiționale.
+                </p>
+
+                <h2>6. Drepturile dumneavoastră</h2>
+                <ul class="legal-list">
+                    <li><strong>Dreptul la acces</strong> – puteți solicita acces și detalii despre prelucrare.</li>
+                    <li><strong>Dreptul de a restricționa prelucrarea</strong> – poate afecta procesarea comenzii.</li>
+                    <li><strong>Dreptul la rectificare</strong> – corectarea datelor din cont sau la <a href="mailto:contact@fillermed.ro">contact@fillermed.ro</a>.</li>
+                    <li><strong>Dreptul la portabilitate</strong> – furnizarea datelor într-un format structurat.</li>
+                    <li><strong>Dreptul de a fi uitat</strong> – ștergerea datelor (cu excepțiile legale).</li>
+                    <li><strong>Dreptul la opoziție</strong> – inclusiv pentru marketing direct (opt-out / email).</li>
+                </ul>
+
+                <h2>7. Contact</h2>
+                <p>
+                    Vă puteți exercita drepturile înaintând o solicitare scrisă prin formularul de contact
+                    sau la <a href="mailto:contact@fillermed.ro">contact@fillermed.ro</a>.
+                </p>
+
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

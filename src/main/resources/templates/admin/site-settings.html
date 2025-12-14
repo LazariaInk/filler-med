@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="RO">
+<head>
+    <title>Setări site - Fillermed</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div th:replace="admin/fragments :: sidebar('site-settings')"></div>
+
+    <div class="admin-main">
+        <div th:replace="admin/fragments :: topbar('admin')"></div>
+        <div class="content-shell">
+            <div class="container-fluid py-2">
+
+                <div th:if="${param.success}" class="alert alert-success">
+                    Modificările au fost salvate.
+                </div>
+
+                <form th:action="@{/admin/site-settings}" th:object="${settings}" method="post">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="section-title">Contact</div>
+
+                            <div class="mb-3">
+                                <label for="facebookUrl" class="form-label">Facebook</label>
+                                <input id="facebookUrl" type="text" class="form-control"
+                                       placeholder="https://facebook.com/pagina-ta"
+                                       th:field="*{facebookUrl}">
+                                <div class="small-hint">Link către pagina de Facebook a magazinului.</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone1" class="form-label">Telefon 1</label>
+                                    <input id="phone1" type="text" class="form-control"
+                                           placeholder="+40 7xx xxx xxx"
+                                           th:field="*{phone1}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone2" class="form-label">Telefon 2</label>
+                                    <input id="phone2" type="text" class="form-control"
+                                           placeholder="+40 7xx xxx xxx"
+                                           th:field="*{phone2}">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Adresă</label>
+                                <input id="address" type="text" class="form-control"
+                                       placeholder="Strada..., Nr..., Oraș..."
+                                       th:field="*{address}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="section-title">Date firmă</div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="regCom" class="form-label">Reg. Com.</label>
+                                    <input id="regCom" type="text" class="form-control"
+                                           placeholder="ex: J40/1234/2020"
+                                           th:field="*{regCom}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cif" class="form-label">CIF</label>
+                                    <input id="cif" type="text" class="form-control"
+                                           placeholder="ex: RO12345678"
+                                           th:field="*{cif}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="section-title d-flex justify-content-between align-items-center">
+                                <span>Pagina "Despre noi"</span>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        onclick="addSection()">
+                                    + Adaugă secțiune
+                                </button>
+                            </div>
+
+                            <p class="small-hint mb-3">
+                                Poți împărți conținutul în secțiuni. Fiecare secțiune are un subtitlu (opțional)
+                                și un paragraf. De exemplu: "Despre noi", "Misiunea noastră", "De ce să ne alegi".
+                            </p>
+
+                            <div id="aboutSectionsContainer">
+                                <div th:each="sec, stat : *{aboutSections}"
+                                     class="border rounded p-3 mb-3 bg-light about-section-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong>Secțiunea [[${stat.index} + 1]]</strong>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="removeSection(this)">
+                                            Șterge
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Subtitlu</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               th:field="*{aboutSections[__${stat.index}__].subtitle}"
+                                               placeholder="ex: Despre Fillermed">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Paragraf</label>
+                                        <textarea class="form-control" rows="3"
+                                                  th:field="*{aboutSections[__${stat.index}__].content}"
+                                                  placeholder="Scrie aici textul pentru această secțiune"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <template id="aboutSectionTemplate">
+                                <div class="border rounded p-3 mb-3 bg-light about-section-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong>Secțiune nouă</strong>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="removeSection(this)">
+                                            Șterge
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Subtitlu</label>
+                                        <input type="text"
+                                               class="form-control subtitle-input"
+                                               placeholder="ex: Despre Fillermed">
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label">Paragraf</label>
+                                        <textarea class="form-control content-input"
+                                                  rows="3"
+                                                  placeholder="Scrie aici textul pentru această secțiune"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Salvează modificările
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.body.classList.toggle('sidebar-open');
+    }
+
+    let nextAboutIndex = 0;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('aboutSectionsContainer');
+        if (!container) {
+            return;
+        }
+
+        const namedInputs = container.querySelectorAll(
+            'input[name^="aboutSections["], textarea[name^="aboutSections["]'
+        );
+
+        namedInputs.forEach(input => {
+            const name = input.name;
+            const start = name.indexOf('[');
+            const end = name.indexOf(']', start + 1);
+            if (start !== -1 && end !== -1) {
+                const idxStr = name.substring(start + 1, end);
+                const idx = parseInt(idxStr, 10);
+                if (!isNaN(idx) && idx >= nextAboutIndex) {
+                    nextAboutIndex = idx + 1;
+                }
+            }
+        });
+    });
+
+    function addSection() {
+        const container = document.getElementById('aboutSectionsContainer');
+        const template = document.getElementById('aboutSectionTemplate');
+        if (!container || !template) {
+            return;
+        }
+
+        const clone = template.content.cloneNode(true);
+        const item = clone.querySelector('.about-section-item');
+        const subtitleInput = item.querySelector('.subtitle-input');
+        const contentInput = item.querySelector('.content-input');
+
+        subtitleInput.name = 'aboutSections[' + nextAboutIndex + '].subtitle';
+        contentInput.name = 'aboutSections[' + nextAboutIndex + '].content';
+
+        nextAboutIndex++;
+        container.appendChild(clone);
+    }
+
+    function removeSection(btn) {
+        const item = btn.closest('.about-section-item');
+        if (item) {
+            item.remove();
+        }
+    }
+</script>
+</body>
+</html>

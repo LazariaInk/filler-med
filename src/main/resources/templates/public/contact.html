@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact | Fillermed</title>
+    <meta name="description"
+          content="Contactează Fillermed pentru informații despre produse, comenzi și colaborări profesionale.">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        @media (max-width: 768px) {
+  .hero-subtitle { font-size: 38px !important; }
+  .hero-content p { font-size: 1.05rem !important; }
+
+  /* card-ul: grid devine 1 coloană */
+  .hero .hero-content > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<section class="hero">
+    <div class="hero-inner" style="background-image:url('/images/hero.jpeg')">
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-content" style="align-items:center; text-align:center;">
+
+            <h1 class="hero-subtitle" style="font-size:64px; line-height:1.1;">
+                <span>Contact</span>
+            </h1>
+
+            <p style="
+                color:#ffffff;
+                font-size:1.35rem;
+                line-height:1.75;
+                max-width:900px;
+                margin-top:1.1rem;
+                opacity:0.98;">
+                Suntem aici pentru informații despre produse, comenzi și colaborări profesionale.
+            </p>
+
+            <!-- CARD (ca să se citească bine peste imagine) -->
+            <div style="
+                margin-top:2.1rem;
+                max-width:920px;
+                width:100%;
+                padding:1.4rem 1.4rem;
+                background:rgba(15, 23, 42, 0.55);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+                border:1px solid rgba(255,255,255,0.18);
+                box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+                border-radius: 14px;
+                color:#ffffff;
+                text-align:left;
+            ">
+
+                <div style="
+                    display:grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1rem 1.25rem;
+                    align-items:start;
+                ">
+
+                    <!-- Adresă -->
+                    <div>
+                        <div style="font-weight:800; font-size:1.05rem; letter-spacing:0.02em;">
+                            Adresă
+                        </div>
+                        <div style="margin-top:0.3rem; font-size:1.05rem; opacity:0.95;"
+                             th:text="${#strings.isEmpty(settings.address) ? '—' : settings.address}">
+                            —
+                        </div>
+                    </div>
+
+                    <!-- Telefon -->
+                    <div>
+                        <div style="font-weight:800; font-size:1.05rem; letter-spacing:0.02em;">
+                            Telefon
+                        </div>
+
+                        <div style="margin-top:0.3rem; font-size:1.05rem; opacity:0.95;">
+                            <span th:text="${#strings.isEmpty(settings.phone1) ? '—' : settings.phone1}">—</span>
+                            <span th:if="${!#strings.isEmpty(settings.phone2)}">
+                                / <span th:text="${settings.phone2}"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div>
+                        <div style="font-weight:800; font-size:1.05rem; letter-spacing:0.02em;">
+                            Facebook
+                        </div>
+
+                        <div style="margin-top:0.3rem; font-size:1.05rem; opacity:0.95;">
+                            <a th:if="${!#strings.isEmpty(settings.facebookUrl)}"
+                               th:href="${settings.facebookUrl}"
+                               target="_blank"
+                               rel="noopener"
+                               style="color:#ffffff; text-decoration:underline; font-weight:700;">
+                                Deschide pagina oficială
+                            </a>
+
+                            <span th:if="${#strings.isEmpty(settings.facebookUrl)}">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Date companie -->
+                    <div>
+                        <div style="font-weight:800; font-size:1.05rem; letter-spacing:0.02em;">
+                            Date companie
+                        </div>
+
+                        <div style="margin-top:0.3rem; font-size:1.05rem; opacity:0.95;">
+                            <div>
+                                Reg. Com.: <span th:text="${#strings.isEmpty(settings.regCom) ? '—' : settings.regCom}">—</span>
+                            </div>
+                            <div style="margin-top:0.2rem;">
+                                CIF: <span th:text="${#strings.isEmpty(settings.cif) ? '—' : settings.cif}">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mic CTA jos -->
+                <div style="
+                    margin-top:1.2rem;
+                    padding-top:1rem;
+                    border-top:1px solid rgba(255,255,255,0.18);
+                    text-align:center;
+                    font-size:1.05rem;
+                    opacity:0.95;
+                ">
+                    Program: <strong>Lu–Vi</strong> 09:00–17:00 • Răspundem cât mai rapid posibil.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

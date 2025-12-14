@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Politica de retur - Fillermed</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<main>
+    <section class="legal-hero">
+        <div class="container">
+            <h1 class="legal-title">Politica de retur</h1>
+            <p class="legal-subtitle">
+                Informații importante despre condițiile de retur și produse neconforme.
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container legal-wrap">
+            <article class="legal-card">
+                <p>
+                    Produsele comercializate pe site-ul nostru nu fac obiectul returului, conform legislației în vigoare și
+                    politicii interne a companiei. Având în vedere natura produselor comercializate, returnarea acestora
+                    nu este permisă din motive de protecție a sănătății publice și igienă, conform art. 16 lit. e) din
+                    O.U.G. nr. 34/2014.
+                </p>
+
+                <p>
+                    Prin plasarea unei comenzi, clientul își asumă responsabilitatea integrală de a verifica în prealabil
+                    toate informațiile privind produsul: descrierea completă, compoziția, caracteristicile, modul de
+                    utilizare și eventualele contraindicații. Finalizarea comenzii reprezintă acordul expres al clientului
+                    privind achiziția produselor selectate, fără posibilitatea de retur.
+                </p>
+
+                <p>
+                    Returnarea produselor nu este acceptată din motive ce țin de preferințe personale sau de neglijența
+                    clientului în completarea datelor de livrare ori în respectarea instrucțiunilor de utilizare.
+                </p>
+
+                <div class="legal-callout">
+                    <h3>Produs neconform la livrare</h3>
+                    <p>
+                        Dacă produsul primit este neconform în momentul livrării, clientul are obligația de a sesiza acest
+                        aspect în termen de <strong>24 de ore</strong> de la primirea coletului, prin e-mail sau telefon,
+                        însoțit de fotografii relevante. Sesizările după acest termen nu pot fi luate în considerare.
+                    </p>
+                </div>
+
+                <p>
+                    Ne rezervăm dreptul de a refuza primirea oricărui colet returnat fără acordul nostru scris.
+                </p>
+
+                <p>
+                    Prin finalizarea comenzii, clientul confirmă că a citit, înțeles și acceptat prezenta politică de retur,
+                    asumându-și pe deplin răspunderea pentru alegerea produselor comandate și pentru respectarea instrucțiunilor
+                    de utilizare furnizate de producător.
+                </p>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

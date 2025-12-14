@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<body>
+
+<header th:fragment="siteHeader(cart)">
+    <div class="container header-inner">
+        <div class="header-top">
+            <div class="header-top-row">
+                <button class="burger" id="burgerBtn" aria-label="Deschide meniul de navigare">
+                    <span></span><span></span><span></span>
+                </button>
+
+                <a class="cart" th:href="@{/cos}">
+                    <div class="cart-icon"></div>
+                    <div>
+                        <div class="cart-text-main">Vezi coșul</div>
+                        <div class="cart-text-sub"
+                             th:text="${cart != null ? (cart.totalQuantity + ' produse · ' + cart.totalAmount + ',00 RON') : '0 produse · 0,00 RON'}">
+                            0 produse · 0,00 RON
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <a class="logo" th:href="@{/}">
+                <img th:src="@{/images/logo1.png}" alt="Fillermed logo" class="logo-img">
+            </a>
+        </div>
+
+        <nav class="header-bottom">
+            <a class="nav-pill nav-pill--primary" th:href="@{/}">Acasă</a>
+            <a class="nav-pill" th:href="@{/produse}">Produse</a>
+            <a class="nav-pill" th:href="@{/produse(q='', category='', brand='', sort='discount', size=24, page=0)}">Oferte</a>
+            <a class="nav-pill" th:href="@{/despre-noi}">Despre noi</a>
+            <a class="nav-pill" th:href="@{/contact}">Contacte</a>
+        </nav>
+    </div>
+</header>
+
+<footer th:fragment="siteFooter">
+    <div class="container">
+        <div class="footer-top">
+            <!-- Coloana 1 -->
+            <div class="footer-column">
+                <h4>Linkuri utile</h4>
+                <a class="footer-link" th:href="@{/contact}">Contact</a>
+                <a class="footer-link" th:href="@{/politica-gdpr}">Politica GDPR</a>
+                <a class="footer-link" th:href="@{/politica-retur}">Politica de retur</a>
+                <a class="footer-link" th:href="@{/termeni-si-conditii}">Termeni și condiții</a>
+            </div>
+
+            <!-- Coloana 2 -->
+            <div class="footer-column">
+                <h4>ANPC</h4>
+
+                <a class="anpc-badge"
+                   href="https://consumer-redress.ec.europa.eu/site-relocation_en?event=main.home.chooseLanguage"
+                   target="_blank" rel="noopener noreferrer">
+                    <img th:src="@{/images/anpc-sal.png}" alt="ANPC - SAL">
+                </a>
+
+                <a class="anpc-badge"
+                   href="https://reclamatiisal.anpc.ro/"
+                   target="_blank" rel="noopener noreferrer">
+                    <img th:src="@{/images/anpc-sol.png}" alt="ANPC - SOL">
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-social-inner">
+            <button class="social-btn" type="button"><img th:src="@{/images/ig-social.png}" alt="Instagram"></button>
+            <button class="social-btn" type="button"><img th:src="@{/images/fb-social.png}" alt="Facebook"></button>
+            <button class="social-btn" type="button"><img th:src="@{/images/wa-social.png}" alt="WhatsApp"></button>
+        </div>
+
+        <div class="footer-bottom">
+            <div><strong>Fillermed.ro</strong></div>
+            <div><a href="mailto:info@fillermed.ro">info@fillermed.ro</a></div>
+            <div>©2025 by Lazar</div>
+        </div>
+    </div>
+</footer>
+
+<th:block th:fragment="siteScripts">
+    <script>
+        // Splash
+        (function () {
+            const splash = document.getElementById("splashScreen");
+            const headerLogo = document.querySelector(".logo-img");
+            if (!splash) return;
+
+            const isMobile = window.innerWidth <= 640;
+            if (!isMobile) {
+                splash.classList.add("splash--hidden");
+                document.body.classList.remove("has-splash");
+                return;
+            }
+
+            document.body.classList.add("has-splash");
+            setTimeout(() => {
+                splash.classList.add("splash--fade-out");
+                if (headerLogo) {
+                    headerLogo.style.opacity = "1";
+                    headerLogo.style.transform = "translateY(0)";
+                }
+                setTimeout(() => {
+                    splash.classList.add("splash--hidden");
+                    document.body.classList.remove("has-splash");
+                }, 600);
+            }, 3200);
+        })();
+
+        // Burger
+        (function () {
+            const burger = document.getElementById("burgerBtn");
+            const headerNav = document.querySelector(".header-bottom");
+            if (!burger || !headerNav) return;
+
+            burger.addEventListener("click", () => {
+                const isOpen = headerNav.classList.toggle("is-open");
+                burger.classList.toggle("is-open", isOpen);
+                document.body.classList.toggle("nav-open", isOpen);
+            });
+
+            window.addEventListener("resize", () => {
+                if (window.innerWidth > 640 && headerNav.classList.contains("is-open")) {
+                    headerNav.classList.remove("is-open");
+                    burger.classList.remove("is-open");
+                    document.body.classList.remove("nav-open");
+                }
+            });
+        })();
+    </script>
+</th:block>
+
+</body>
+</html>

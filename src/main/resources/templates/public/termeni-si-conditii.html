@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Termeni și condiții - Fillermed</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<main>
+    <section class="legal-hero">
+        <div class="container">
+            <h1 class="legal-title">Termeni și condiții</h1>
+            <p class="legal-subtitle">
+                Condițiile de utilizare ale site-ului fillermed.ro.
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container legal-wrap">
+            <article class="legal-card">
+                <p>
+                    Bine ați venit pe fillermed.ro. Acest document stabilește termenii și condițiile de utilizare ale site-ului
+                    gestionat de FILLERMED SRL, înregistrată la Registrul Comerțului cu nr. J05/961/2020, având CUI 42655596,
+                    cu sediul în Oradea, Str. George Bacaloglu („Operatorul”).
+                </p>
+                <p>
+                    Prin utilizarea site-ului, acceptați integral și necondiționat acești Termeni și Condiții.
+                </p>
+
+                <h2>1. Scopul site-ului</h2>
+                <p>
+                    Site-ul fillermed.ro este un site de prezentare pentru clinica medicală specializată în chirurgie estetică,
+                    oferind informații despre servicii medicale, tratamente estetice și proceduri chirurgicale.
+                </p>
+                <p>
+                    De asemenea, site-ul comercializează produse cosmetice și estetice, precum acid hialuronic și alte produse profesionale.
+                    Informațiile prezentate au scop informativ și nu înlocuiesc consultul medical realizat de un medic specialist.
+                </p>
+
+                <h2>2. Serviciile oferite</h2>
+                <ul class="legal-list">
+                    <li>vizualizarea informațiilor despre serviciile medicale oferite de clinică;</li>
+                    <li>solicitarea programărilor online;</li>
+                    <li>achiziționarea de produse cosmetice/estetice;</li>
+                    <li>contactarea clinicii prin formularele de pe site.</li>
+                </ul>
+                <p>Orice informație medicală furnizată pe site este generală și nu poate substitui consultația personalizată.</p>
+
+                <h2>3. Produsele comercializate</h2>
+                <p>
+                    Produsele comercializate sunt destinate uzului cosmetic sau estetic profesional, conform indicațiilor producătorului.
+                    Operatorul își rezervă dreptul de a refuza comenzi în cazul unor suspiciuni privind utilizarea necorespunzătoare.
+                    Prețurile pot fi modificate fără notificare prealabilă. Imaginile produselor sunt orientative.
+                </p>
+
+                <h2>4. Programări și responsabilități</h2>
+                <p>
+                    Programările realizate prin site sunt considerate solicitări, iar confirmarea finală se va realiza telefonic sau prin email.
+                    Procedurile pot varia de la un pacient la altul și necesită consult personalizat.
+                </p>
+
+                <h2>5. Drepturi de autor</h2>
+                <p>
+                    Întregul conținut al site-ului (texte, imagini, logo-uri, materiale video, structura paginii) este proprietatea
+                    Operatorului sau este utilizat cu permisiune. Este interzisă copierea/distribuirea în scop comercial fără acord scris.
+                </p>
+
+                <h2>6. Prelucrarea datelor personale (GDPR)</h2>
+                <p>
+                    Operatorul prelucrează datele personale în conformitate cu Regulamentul (UE) 2016/679 și legislația națională.
+                    Datele pot fi colectate prin formulare, comenzi online, cookie-uri și tehnologii similare.
+                </p>
+
+                <h2>7. Plăți și livrare</h2>
+                <p>
+                    Plățile se pot efectua prin metodele afișate în pagina de checkout. Produsele sunt livrate prin firme de curierat partenere,
+                    iar termenele sunt estimative. Operatorul nu poate fi responsabil pentru întârzieri cauzate de curier.
+                </p>
+
+                <h2>8. Retururi și garanții</h2>
+                <p>
+                    Produsele comercializate pe site-ul nostru nu fac obiectul returului, conform art. 16 lit. e) din O.U.G. nr. 34/2014.
+                    Prin plasarea comenzii, clientul își asumă responsabilitatea verificării informațiilor produsului și acceptă achiziția fără retur.
+                    Dacă produsul este neconform la livrare, clientul trebuie să ne contacteze în 24 de ore și să trimită dovezi foto.
+                </p>
+
+                <h2>9. Limitarea responsabilității</h2>
+                <p>
+                    Operatorul nu garantează funcționarea neîntreruptă a site-ului și nu poate fi responsabil pentru utilizarea informațiilor medicale
+                    fără consult, folosirea incorectă a produselor, erori tehnice, atacuri informatice sau indisponibilități temporare.
+                </p>
+
+                <h2>10. Linkuri către alte site-uri</h2>
+                <p>Site-ul poate conține linkuri către resurse externe. Operatorul nu este responsabil pentru conținutul sau politicile acestora.</p>
+
+                <h2>11. Modificarea Termenilor și Condițiilor</h2>
+                <p>Operatorul poate modifica acești termeni în orice moment. Versiunea actualizată este publicată pe site.</p>
+
+                <h2>12. Legea aplicabilă</h2>
+                <p>Documentul este guvernat de legislația română. Orice litigiu va fi soluționat de instanțele competente din România.</p>
+
+                <h2>13. Contact</h2>
+                <p>Pentru întrebări sau nelămuriri ne puteți contacta prin pagina <a th:href="@{/contact}">Contact</a>.</p>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

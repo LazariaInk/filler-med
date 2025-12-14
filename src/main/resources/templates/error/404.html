@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pagina nu a fost găsită | Fillermed</title>
+    <meta name="robots" content="noindex,follow" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<section class="hero">
+    <div class="hero-inner" style="background-image:url('/images/hero.jpeg')">
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-content" style="align-items:center; text-align:center;">
+            <h1 class="hero-subtitle" style="font-size:64px; line-height:1.12; max-width:1000px;">
+                Ups… ai ajuns într-un <span>link inexistent</span>
+            </h1>
+
+            <p style="
+          color:#ffffff;
+          font-size:1.35rem;
+          line-height:1.75;
+          max-width:900px;
+          margin-top:1.2rem;
+          opacity:0.98;
+        ">
+                Pagina pe care o cauți nu există sau a fost mutată.
+                Te invităm să vezi produsele noastre în secțiunea <strong>Produse</strong>.
+            </p>
+
+            <div style="margin-top:2rem;">
+                <a class="btn-primary" th:href="@{/produse}" style="font-size:20px; padding:0.9rem 1.8rem;">
+                    Vezi produsele <span class="arrow">→</span>
+                </a>
+            </div>
+
+            <p style="color:#ffffff; opacity:0.9; margin-top:1.5rem; font-size:1.05rem;">
+                Sau mergi la <a th:href="@{/}" style="color:#fff; text-decoration:underline;">pagina principală</a>.
+            </p>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

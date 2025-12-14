@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <title>A apărut o problemă | Fillermed</title>
+    <meta name="robots" content="noindex,follow" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<section class="hero">
+    <div class="hero-inner" style="background-image:url('/images/hero.jpeg')">
+        <div class="hero-overlay"></div>
+
+        <div class="container hero-content" style="align-items:center; text-align:center;">
+            <h1 class="hero-subtitle" style="font-size:58px; line-height:1.12; max-width:1000px;">
+                Ups… ceva nu a mers <span>cum trebuie</span>
+            </h1>
+
+            <p style="color:#ffffff; font-size:1.25rem; line-height:1.75; max-width:900px; margin-top:1.2rem; opacity:0.98;">
+                Te rugăm să încerci din nou. Între timp, poți continua navigarea în magazin.
+            </p>
+
+            <div style="margin-top:2rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                <a class="btn-primary" th:href="@{/produse}" style="font-size:20px; padding:0.9rem 1.8rem;">
+                    Vezi produsele <span class="arrow">→</span>
+                </a>
+                <a class="btn-light" th:href="@{/}" style="font-size:18px;">
+                    Acasă
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Fragments</title>
+</head>
+<body>
+<div th:fragment="sidebar(activePage)">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-pill"></div>
+            <div>
+                <div>Fillermed Admin</div>
+                <div class="sidebar-subtitle">Panou de administrare</div>
+            </div>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li>
+                <a th:href="@{/admin/site-settings}"
+                   th:class="'sidebar-link ' + (${activePage} == 'site-settings' ? 'active' : '')">
+                    <span class="sidebar-link-label">
+                        <span>Setări platformă</span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/products}"
+                   th:class="'sidebar-link ' + (${activePage} == 'products' ? 'active' : '')">
+                    <span class="sidebar-link-label">
+                        <span>Gestionare produse</span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/notifications}"
+                   th:class="'sidebar-link ' + (${activePage} == 'notifications' ? 'active' : '')">
+                    <span class="sidebar-link-label">
+                        <span>Notificări</span>
+                    </span>
+                    <span class="sidebar-badge">3</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/}" class="btn-back-store">
+                ← Înapoi la magazin
+            </a>
+        </div>
+    </aside>
+</div>
+
+<div th:fragment="topbar(username)">
+    <header class="topbar">
+        <button type="button" class="hamburger-btn" onclick="toggleSidebar()">
+            <span class="hamburger-icon"></span>
+        </button>
+        <div class="topbar-logo">
+            <img th:src="@{/images/logo1.png}" alt="Fillermed" />
+        </div>
+        <div class="topbar-right">
+            Logat ca <strong th:text="${username}">admin</strong>
+        </div>
+    </header>
+</div>
+
+</body>
+</html>

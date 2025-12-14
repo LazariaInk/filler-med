@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${q != null && !#strings.isEmpty(q) ? ('Produse - ' + q + ' | Fillermed') : 'Produse | Fillermed'}">Produse | Fillermed</title>
+    <meta name="description" th:content="${q != null && !#strings.isEmpty(q) ? ('Vezi produsele pentru: ' + q) : 'Vezi toate produsele disponibile pe Fillermed.'}" />
+    <link rel="canonical" th:href="@{/produse}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        .products-page { padding: 1.25rem 0 2rem; }
+
+        .products-top{
+          display:flex; align-items:flex-end; justify-content:space-between;
+          gap:1rem; flex-wrap:wrap; margin: .25rem 0 1rem;
+        }
+        .products-top h1{ margin:0; font-size:1.35rem; font-weight:900; }
+        .products-top p{ margin:.25rem 0 0; color:var(--muted); font-size:.95rem; }
+
+        .filters{
+          display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
+          background: var(--card-bg);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 6px 18px rgba(15,23,42,.08);
+          padding: .75rem;
+          margin-bottom: .9rem;
+        }
+        .filters input, .filters select{
+          padding: .65rem .9rem;
+          border: 1px solid #d1d5db;
+          background:#fff;
+          font-size:.9rem;
+          outline:none;
+          min-width: 180px;
+        }
+        .filters input:focus, .filters select:focus{
+          border-color: var(--primary);
+          box-shadow: 0 0 0 1px rgba(234, 90, 202, 0.3);
+        }
+        .filters button{
+          padding: .65rem 1rem;
+          border:none;
+          background: var(--primary);
+          color:#fff;
+          font-weight:800;
+          cursor:pointer;
+          box-shadow: 0 12px 30px rgba(234,90,202,.25);
+        }
+        .filters a.reset{
+          padding: .65rem 1rem;
+          border: 1px solid #e5e7eb;
+          background:#fff;
+          font-weight:800;
+        }
+
+        .product-price { font-size:.9rem; font-weight:800; color: var(--primary); }
+        .product-price-old { font-size:.85rem; color: var(--muted); text-decoration: line-through; margin-left: .35rem; font-weight:600; }
+
+        .btn-view{
+          flex:1;
+          padding: 0.55rem 0.9rem;
+          border: 1px solid #e5e7eb;
+          background:#fff;
+          font-size: .85rem;
+          font-weight:800;
+          cursor:pointer;
+          text-align:center;
+        }
+        .btn-view:hover{ background:#fdf2fb; }
+
+        .empty-state{
+          background: var(--card-bg);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+          padding: 1rem;
+          color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER (identic cu al tău) -->
+<div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
+
+<main class="products-page">
+    <div class="container">
+
+        <div style="font-size:.85rem; color: var(--muted); margin: .25rem 0 1rem;">
+            <a th:href="@{/}">Acasă</a> / <span>Produse</span>
+        </div>
+
+        <div class="products-top">
+            <div>
+                <h1 th:text="${q != null && !#strings.isEmpty(q) ? ('Produse pentru: ' + q) : 'Toate produsele'}">Toate produsele</h1>
+                <p th:text="${page != null ? (page.getTotalElements() + ' produse') : '0 produse'}">0 produse</p>
+            </div>
+        </div>
+
+        <form class="filters" th:action="@{/produse}" method="get" id="filtersForm">
+            <input type="text" name="q" placeholder="Caută produs..." th:value="${q}" id="qInput"/>
+
+            <select name="category" id="categorySelect">
+                <option value="">Toate categoriile</option>
+                <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"
+                        th:selected="${category != null && category == c}">
+                </option>
+            </select>
+
+            <select name="brand" id="brandSelect">
+                <option value="">Toate brandurile</option>
+                <option th:each="b : ${brands}" th:value="${b}" th:text="${b}"
+                        th:selected="${brand != null && brand == b}">
+                </option>
+            </select>
+
+            <select name="sort" id="sortSelect">
+                <option value="newest" th:selected="${sort == null || sort == 'newest'}">Cele mai noi</option>
+                <option value="price_asc" th:selected="${sort == 'price_asc'}">Preț crescător</option>
+                <option value="price_desc" th:selected="${sort == 'price_desc'}">Preț descrescător</option>
+                <option value="discount" th:selected="${sort == 'discount'}">Reduceri</option>
+            </select>
+
+            <input type="hidden" name="size" th:value="${size}" />
+            <input type="hidden" name="page" th:value="${page != null ? page.number : 0}" id="pageInput" />
+
+            <a class="reset" th:href="@{/produse}"
+               th:if="${(q != null && !#strings.isEmpty(q)) || (category != null && !#strings.isEmpty(category)) || (brand != null && !#strings.isEmpty(brand)) || (sort != null && sort != 'newest')}">
+                Reset
+            </a>
+        </form>
+
+
+        <!-- EMPTY -->
+        <div class="empty-state" th:if="${products == null || #lists.isEmpty(products)}">
+            Nu am găsit produse.
+        </div>
+
+        <!-- GRID -->
+        <section class="products-grid" th:if="${products != null && !#lists.isEmpty(products)}">
+            <article class="product-card" th:each="p : ${products}">
+                <a class="product-image" th:href="@{'/produse/' + ${p.slug}}">
+                    <img th:src="${p.primaryImage != null ? p.primaryImage.url : '/images/logo1.png'}"
+                         th:alt="${p.title}" loading="lazy">
+                </a>
+
+                <div class="product-badge" th:text="${p.category != null ? p.category : 'Produs'}">Produs</div>
+
+                <h3 class="product-name">
+                    <a th:href="@{'/produse/' + ${p.slug}}" th:text="${p.title}">Titlu produs</a>
+                </h3>
+
+                <div style="margin-top:.1rem;">
+          <span class="product-price"
+                th:text="${p.discountedPrice != null ? p.discountedPrice : p.price}">0</span>
+                    <span style="font-weight:800;"> RON</span>
+
+                    <span class="product-price-old" th:if="${p.discountedPrice != null}"
+                          th:text="${p.price + ' RON'}">
+            0 RON
+          </span>
+                </div>
+
+                <hr class="product-hr">
+
+                <div style="color: var(--muted); font-size:.85rem; line-height:1.35;"
+                     th:text="${p.shortDescription != null ? #strings.abbreviate(p.shortDescription, 120) : ''}">
+                    Descriere scurtă…
+                </div>
+
+                <div class="product-actions">
+                    <a class="btn-view" th:href="@{'/produse/' + ${p.slug}}">Vezi produsul</a>
+
+                    <form th:if="${p.stock != null && p.stock > 0}"
+                          th:action="@{/cos/add}" method="post" style="flex:1;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="hidden" name="productId" th:value="${p.id}">
+                        <input type="hidden" name="qty" value="1">
+                        <input type="hidden" name="returnTo" th:value="${'/produse?q=' + (q != null ? q : '') + '&category=' + (category != null ? category : '') + '&brand=' + (brand != null ? brand : '') + '&sort=' + (sort != null ? sort : 'newest') + '&size=' + size + '&page=' + (page != null ? page.number : 0)}">
+
+                        <button class="btn-add-cart" type="submit">Adaugă</button>
+                    </form>
+
+                    <button class="btn-out-of-stock" type="button" th:if="${p.stock == null || p.stock == 0}">
+                        Stoc epuizat
+                    </button>
+                </div>
+            </article>
+        </section>
+
+        <!-- PAGINARE -->
+        <div class="pagination" th:if="${page != null && page.getTotalPages() > 1}">
+            <a class="page-dot"
+               th:if="${page.hasPrevious()}"
+               th:href="@{/produse(q=${q}, category=${category}, brand=${brand}, sort=${sort}, size=${size}, page=${page.number - 1})}">
+                ‹
+            </a>
+
+            <a class="page-dot"
+               th:each="i : ${#numbers.sequence(0, page.getTotalPages() - 1)}"
+               th:if="${i >= page.number - 3 && i <= page.number + 3}"
+               th:classappend="${i == page.number ? ' page-dot--active' : ''}"
+               th:text="${i + 1}"
+               th:href="@{/produse(q=${q}, category=${category}, brand=${brand}, sort=${sort}, size=${size}, page=${i})}">
+                1
+            </a>
+
+            <a class="page-dot"
+               th:if="${page.hasNext()}"
+               th:href="@{/produse(q=${q}, category=${category}, brand=${brand}, sort=${sort}, size=${size}, page=${page.number + 1})}">
+                ›
+            </a>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{public/fragments/layout :: siteFooter}"></div>
+<div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+<div class="whatsapp-float">
+    <img th:src="@{/images/wa-button.png}" alt="WhatsApp" class="whatsapp-img">
+</div>
+
+<script>
+    (function () {
+      const burger = document.getElementById("burgerBtn");
+      const headerNav = document.querySelector(".header-bottom");
+      if (!burger || !headerNav) return;
+
+      burger.addEventListener("click", () => {
+        const isOpen = headerNav.classList.toggle("is-open");
+        burger.classList.toggle("is-open", isOpen);
+        document.body.classList.toggle("nav-open", isOpen);
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 640 && headerNav.classList.contains("is-open")) {
+          headerNav.classList.remove("is-open");
+          burger.classList.remove("is-open");
+          document.body.classList.remove("nav-open");
+        }
+      });
+    })();
+</script>
+<script>
+    (function () {
+      const form = document.getElementById("filtersForm");
+      if (!form) return;
+
+      const pageInput = document.getElementById("pageInput");
+      const qInput = document.getElementById("qInput");
+
+      function submitAndResetPage(){
+        if (pageInput) pageInput.value = "0";
+        form.requestSubmit ? form.requestSubmit() : form.submit();
+      }
+
+      // Auto-submit la schimbarea dropdown-urilor
+      const autoSelects = ["categorySelect", "brandSelect", "sortSelect"];
+      autoSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", submitAndResetPage);
+      });
+
+      // Căutare: enter trimite imediat
+      if (qInput) {
+        qInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submitAndResetPage();
+          }
+        });
+
+        // Opțional: debounce (căutare live)
+        let t = null;
+        qInput.addEventListener("input", () => {
+          clearTimeout(t);
+          t = setTimeout(() => {
+            // dacă vrei să nu trimită când e gol, comentează linia următoare
+            submitAndResetPage();
+          }, 500);
+        });
+      }
+    })();
+</script>
+
+</body>
+</html>

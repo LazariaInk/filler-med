@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="RO">
+<head>
+    <title>Gestionare produse - Fillermed</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- CSRF meta (necesar pentru fetch reorder când CSRF e ON) -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+</head>
+
+<body>
+<div class="admin-layout">
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div th:replace="admin/fragments :: sidebar('products')"></div>
+
+    <div class="admin-main">
+        <div th:replace="admin/fragments :: topbar('admin')"></div>
+
+        <div class="content-shell">
+            <div class="container-fluid py-2">
+
+                <!-- Alerts -->
+                <div th:if="${param.success}" class="alert alert-success">
+                    Produsul a fost salvat cu succes.
+                </div>
+                <div th:if="${param.deleted}" class="alert alert-warning">
+                    Produsul a fost șters.
+                </div>
+                <div th:if="${param.imgDeleted}" class="alert alert-warning">
+                    Imaginea a fost ștearsă.
+                </div>
+                <div th:if="${param.imgPrimary}" class="alert alert-success">
+                    Imaginea principală a fost setată.
+                </div>
+                <div th:if="${param.imgAltSaved}" class="alert alert-success">
+                    Alt text salvat.
+                </div>
+
+                <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Gestionare produse</h4>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            onclick="window.location.href='/admin/products'">
+                        Reset formular
+                    </button>
+                </div>
+
+                <div class="row">
+
+                    <!-- LEFT: Products table -->
+                    <div class="col-lg-7 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="section-title mb-0">Produse existente</div>
+
+                                    <form class="d-flex" th:action="@{/admin/products}" method="get">
+                                        <input type="text"
+                                               class="form-control form-control-sm me-2"
+                                               name="q"
+                                               placeholder="Caută după nume..."
+                                               th:value="${param.q}">
+                                        <button class="btn btn-sm btn-outline-primary" type="submit">
+                                            Caută
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-sm align-middle mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nume</th>
+                                            <th>Preț</th>
+                                            <th>Stoc</th>
+                                            <th>Activ</th>
+                                            <th style="width: 140px;">Acțiuni</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        <tr th:if="${#lists.isEmpty(products)}">
+                                            <td colspan="6" class="text-center text-muted">
+                                                Nu există produse încă.
+                                            </td>
+                                        </tr>
+
+                                        <tr th:each="p : ${products}">
+                                            <td th:text="${p.id}">1</td>
+
+                                            <td>
+                                                <div class="fw-semibold" th:text="${p.title}">Titlu produs</div>
+                                                <div class="small text-muted" th:text="${p.slug}">slug-produs</div>
+                                            </td>
+
+                                            <td>
+                                                <div>
+                                                    <span th:text="${p.price}">290</span> Lei
+                                                </div>
+                                                <div class="small text-muted" th:if="${p.discountedPrice != null}">
+                                                    Reducere:
+                                                    <span th:text="${p.discountedPrice}">232</span> Lei
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <span th:text="${p.stock}">0</span>
+                                            </td>
+
+                                            <td>
+                                                <span class="badge"
+                                                      th:classappend="${p.active} ? 'bg-success' : 'bg-secondary'">
+                                                    <span th:text="${p.active} ? 'Activ' : 'Ascuns'">Activ</span>
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <div class="d-flex gap-1">
+                                                    <a th:href="@{'/admin/products/edit/' + ${p.id}}"
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        Editează
+                                                    </a>
+
+                                                    <form th:action="@{'/admin/products/delete/' + ${p.id}}"
+                                                          method="post"
+                                                          onsubmit="return confirm('Sigur vrei să ștergi acest produs?');">
+                                                        <button type="submit"
+                                                                class="btn btn-sm btn-outline-danger">
+                                                            Șterge
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Add/Edit form -->
+                    <div class="col-lg-5 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="section-title mb-2">
+                                    <span th:if="${product.id == null}">Adaugă produs nou</span>
+                                    <span th:if="${product.id != null}">Editează produs</span>
+                                </div>
+
+                                <p class="small-hint">
+                                    Completează informațiile produsului. Câmpurile marcate cu * sunt obligatorii.
+                                </p>
+
+                                <form th:action="@{/admin/products/save}"
+                                      th:object="${product}"
+                                      method="post"
+                                      enctype="multipart/form-data">
+
+                                    <input type="hidden" th:field="*{id}"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Titlu *</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               th:field="*{title}"
+                                               placeholder="ex: Volomis Medium"
+                                               required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Slug</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               th:field="*{slug}"
+                                               placeholder="ex: volomis-medium">
+                                        <div class="small-hint">
+                                            Dacă îl lași gol, poate fi generat automat din titlu.
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Preț (Lei) *</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   min="0" step="1"
+                                                   th:field="*{price}"
+                                                   required>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Preț redus (Lei)</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   min="0" step="1"
+                                                   th:field="*{discountedPrice}">
+                                            <div class="small-hint">
+                                                Opțional. Dacă e setat, va fi afișat ca promoție.
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label">Stoc *</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   min="0" step="1"
+                                                   th:field="*{stock}"
+                                                   required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Categorie</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{category}"
+                                                   placeholder="ex: Fillere">
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Brand</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{brand}"
+                                                   placeholder="ex: Volomis">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Volum</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:field="*{volume}"
+                                                   placeholder="ex: 1 ml">
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Activ</label>
+                                            <select class="form-select" th:field="*{active}">
+                                                <option th:value="true">Da</option>
+                                                <option th:value="false">Nu</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Descriere scurtă</label>
+                                        <textarea class="form-control"
+                                                  rows="2"
+                                                  th:field="*{shortDescription}"
+                                                  placeholder="Un rezumat scurt al produsului, pentru listare."></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Descriere detaliată</label>
+                                        <textarea id="description"
+                                                  th:field="*{description}"
+                                                  rows="8"
+                                                  placeholder="Descriere completă a produsului (poți folosi listări, bold etc.)"></textarea>
+                                        <div class="small-hint">
+                                            Acest conținut este salvat ca HTML și va fi randat pe pagina produsului.
+                                        </div>
+                                    </div>
+
+                                    <!-- IMAGINI: upload multiple -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Imagini produs</label>
+                                        <input class="form-control"
+                                               type="file"
+                                               name="productImages"
+                                               accept="image/*"
+                                               multiple>
+                                        <div class="small-hint">
+                                            Selectează una sau mai multe imagini. După salvare, poți seta o imagine ca principală.
+                                        </div>
+                                    </div>
+
+                                    <!-- Galerie imagini existente (drag&drop + alt text) -->
+                                    <div class="mb-3"
+                                         th:if="${product.id != null and product.images != null and !product.images.isEmpty()}">
+
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="fw-semibold">Imagini existente</div>
+                                            <div class="small text-muted">Drag&drop pentru reorder</div>
+                                        </div>
+
+                                        <div class="row g-2" id="imagesGrid">
+                                            <div class="col-6"
+                                                 th:each="img : ${product.images}"
+                                                 th:attr="data-id=${img.id}">
+                                                <div class="border rounded p-2">
+
+                                                    <img th:src="${img.url}"
+                                                         class="img-fluid rounded"
+                                                         style="max-height: 150px; width: 100%; object-fit: cover;"
+                                                         th:alt="${img.altText != null ? img.altText : product.title}">
+
+                                                    <!-- ALT TEXT editabil -->
+                                                    <form class="mt-2"
+                                                          th:action="@{'/admin/products/' + ${product.id} + '/images/' + ${img.id} + '/alt'}"
+                                                          method="post">
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="text"
+                                                                   class="form-control"
+                                                                   name="altText"
+                                                                   th:value="${img.altText}"
+                                                                   placeholder="Alt text (SEO)"
+                                                                   maxlength="160">
+                                                            <button class="btn btn-outline-secondary" type="submit">
+                                                                Salvează
+                                                            </button>
+                                                        </div>
+                                                    </form>
+
+                                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                                        <span class="badge"
+                                                              th:classappend="${img.primaryImage} ? 'bg-primary' : 'bg-secondary'"
+                                                              th:text="${img.primaryImage} ? 'Principală' : 'Galerie'">
+                                                            Principală
+                                                        </span>
+
+                                                        <div class="d-flex gap-1">
+                                                            <form th:action="@{'/admin/products/' + ${product.id} + '/images/' + ${img.id} + '/primary'}"
+                                                                  method="post">
+                                                                <button class="btn btn-sm btn-outline-primary"
+                                                                        type="submit"
+                                                                        th:disabled="${img.primaryImage}">
+                                                                    Principală
+                                                                </button>
+                                                            </form>
+
+                                                            <form th:action="@{'/admin/products/' + ${product.id} + '/images/' + ${img.id} + '/delete'}"
+                                                                  method="post"
+                                                                  onsubmit="return confirm('Ștergi imaginea?');">
+                                                                <button class="btn btn-sm btn-outline-danger"
+                                                                        type="submit">
+                                                                    Șterge
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="small text-muted mt-1">
+                                                        ID imagine: <span th:text="${img.id}">0</span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            Salvează produsul
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- row -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.body.classList.toggle('sidebar-open');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const textarea = document.querySelector('#description');
+        if (textarea) {
+            ClassicEditor
+                .create(textarea, {
+                    toolbar: [
+                        'bold',
+                        'italic',
+                        'link',
+                        'bulletedList',
+                        'numberedList',
+                        'undo',
+                        'redo'
+                    ]
+                })
+                .catch(error => console.error(error));
+        }
+    });
+</script>
+
+<!-- Drag&Drop reorder -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script th:if="${product.id != null}">
+    document.addEventListener('DOMContentLoaded', function () {
+        const grid = document.getElementById('imagesGrid');
+        if (!grid) return;
+
+        const productId = /*[[${product.id}]]*/ 0;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+        new Sortable(grid, {
+            animation: 150,
+            onEnd: async function () {
+                const ids = Array.from(grid.querySelectorAll('[data-id]'))
+                    .map(el => Number(el.getAttribute('data-id')));
+
+                const headers = { 'Content-Type': 'application/json' };
+                if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+                try {
+                    await fetch(`/admin/products/${productId}/images/reorder`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify(ids)
+                    });
+                } catch (e) {
+                    console.error(e);
+                    alert("Nu am putut salva ordinea imaginilor.");
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
