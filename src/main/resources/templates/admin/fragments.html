@@ -32,14 +32,28 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/admin/notifications}"
-                   th:class="'sidebar-link ' + (${activePage} == 'notifications' ? 'active' : '')">
-                    <span class="sidebar-link-label">
-                        <span>Notificări</span>
-                    </span>
-                    <span class="sidebar-badge">3</span>
+                <a th:href="@{/admin/orders}"
+                   th:class="'sidebar-link ' + (${activePage} == 'orders' ? 'active' : '')">
+    <span class="sidebar-link-label">
+      <span>Comenzi</span>
+    </span>
+
+                    <span class="sidebar-badge"
+                          th:if="${openOrdersCount > 0}"
+                          th:text="${openOrdersCount}">
+      0
+    </span>
                 </a>
             </li>
+            <li>
+                <a th:href="@{/admin/orders/logs}"
+                   th:class="'sidebar-link ' + (${activePage} == 'orders-logs' ? 'active' : '')">
+    <span class="sidebar-link-label">
+      <span>Order Logs</span>
+    </span>
+                </a>
+            </li>
+
         </ul>
 
         <div class="sidebar-footer">

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="RO">
+<head>
+    <title>Order Logs - Fillermed</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-layout">
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div th:replace="admin/fragments :: sidebar('orders-logs')"></div>
+
+    <div class="admin-main">
+        <div th:replace="admin/fragments :: topbar('admin')"></div>
+
+        <div class="content-shell">
+            <div class="container-fluid py-2">
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="section-title mb-2">Order Logs</div>
+                        <div class="small-hint">Căutare + filtre pe toate comenzile.</div>
+
+                        <form class="row g-2 align-items-end mt-2" method="get" th:action="@{/admin/orders/logs}">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label">Caută (ID / email / nume / telefon / PI)</label>
+                                <input class="form-control form-control-sm" name="q" th:value="${q}" placeholder="ex: 10, edic@gmail.com, pi_...">
+                            </div>
+
+                            <div class="col-6 col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select form-select-sm" name="status">
+                                    <option value="">Toate</option>
+                                    <option th:each="s : ${allStatuses}"
+                                            th:value="${s}"
+                                            th:selected="${status != null and status.name() == s.name()}"
+                                            th:text="${s}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-2">
+                                <label class="form-label">Metodă plată</label>
+                                <select class="form-select form-select-sm" name="paymentMethod">
+                                    <option value="">Toate</option>
+                                    <option th:each="pm : ${allPaymentMethods}"
+                                            th:value="${pm}"
+                                            th:selected="${paymentMethod != null and paymentMethod.name() == pm.name()}"
+                                            th:text="${pm}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-2">
+                                <label class="form-label">Status plată</label>
+                                <select class="form-select form-select-sm" name="paymentStatus">
+                                    <option value="">Toate</option>
+                                    <option th:each="ps : ${allPaymentStatuses}"
+                                            th:value="${ps}"
+                                            th:selected="${paymentStatus != null and paymentStatus.name() == ps.name()}"
+                                            th:text="${ps}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-1">
+                                <label class="form-label">Min</label>
+                                <input class="form-control form-control-sm" type="number" name="minTotal" th:value="${minTotal}">
+                            </div>
+
+                            <div class="col-6 col-md-1">
+                                <label class="form-label">Max</label>
+                                <input class="form-control form-control-sm" type="number" name="maxTotal" th:value="${maxTotal}">
+                            </div>
+
+                            <div class="col-6 col-md-1">
+                                <label class="form-label">Per pagină</label>
+                                <select class="form-select form-select-sm" name="size">
+                                    <option th:selected="${size == 10}" value="10">10</option>
+                                    <option th:selected="${size == 25}" value="25">25</option>
+                                    <option th:selected="${size == 50}" value="50">50</option>
+                                    <option th:selected="${size == 100}" value="100">100</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-auto">
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Aplică</button>
+                                <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/orders/logs}">Reset</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="section-title mb-0">
+                                Rezultate: <span th:text="${ordersPage.totalElements}">0</span>
+                            </div>
+                            <div class="small text-muted">
+                                Pagina <span th:text="${ordersPage.number + 1}">1</span> / <span th:text="${ordersPage.totalPages}">1</span>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mt-3">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Creată</th>
+                                    <th>Client</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Plată</th>
+                                    <th>Stripe PI</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${ordersPage.content == null || #lists.isEmpty(ordersPage.content)}">
+                                    <td colspan="7" class="text-center text-muted">Niciun rezultat.</td>
+                                </tr>
+
+                                <tr th:each="o : ${ordersPage.content}">
+                                    <td><strong th:text="${o.id}">0</strong></td>
+                                    <td th:text="${#temporals.format(o.createdAt, 'yyyy-MM-dd HH:mm')}">-</td>
+                                    <td>
+                                        <div class="fw-semibold" th:text="${o.customerName}">-</div>
+                                        <div class="small text-muted" th:text="${o.customerEmail}">-</div>
+                                        <div class="small text-muted" th:text="${o.customerPhone}">-</div>
+                                    </td>
+                                    <td><span th:text="${o.totalAmountRon}">0</span> RON</td>
+                                    <td>
+                                        <span class="badge bg-secondary" th:text="${o.status}">NEW</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary" th:text="${o.paymentMethod}">COD</span>
+                                        <span class="badge bg-info text-dark" th:text="${o.paymentStatus}">PENDING</span>
+                                    </td>
+                                    <td class="text-muted small" th:text="${o.stripePaymentIntentId}">-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-2"
+                             th:if="${ordersPage.totalPages > 1}">
+                            <div class="small text-muted">
+                                Afișezi <span th:text="${ordersPage.numberOfElements}">0</span> din <span th:text="${ordersPage.totalElements}">0</span>
+                            </div>
+
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   th:if="${ordersPage.hasPrevious()}"
+                                   th:href="@{/admin/orders/logs(page=${ordersPage.number-1}, size=${size}, q=${q}, status=${status}, paymentMethod=${paymentMethod}, paymentStatus=${paymentStatus}, minTotal=${minTotal}, maxTotal=${maxTotal})}">
+                                    ← Prev
+                                </a>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                   th:if="${ordersPage.hasNext()}"
+                                   th:href="@{/admin/orders/logs(page=${ordersPage.number+1}, size=${size}, q=${q}, status=${status}, paymentMethod=${paymentMethod}, paymentStatus=${paymentStatus}, minTotal=${minTotal}, maxTotal=${maxTotal})}">
+                                    Next →
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-open');
+    }
+</script>
+</body>
+</html>
