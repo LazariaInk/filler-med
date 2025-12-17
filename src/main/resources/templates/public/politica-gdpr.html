@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Politica GDPR - Fillermed</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        @media (max-width: 640px) {
+  .logo-img {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  /* ascundem doar când splash-ul e activ */
+  body.has-splash .logo-img {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+    </style>
 </head>
 <body>
 
@@ -109,6 +124,104 @@
 
 <div th:replace="~{public/fragments/layout :: siteFooter}"></div>
 <div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+<script>
+    // Splash (O SINGURĂ DATĂ)
+    (function () {
+        const splash = document.getElementById("splashScreen");
+        const headerLogo = document.querySelector(".logo-img");
+        if (!splash) return;
+
+        const isMobile = window.innerWidth <= 640;
+
+        if (!isMobile) {
+            splash.classList.add("splash--hidden");
+            document.body.classList.remove("has-splash");
+            return;
+        }
+
+        document.body.classList.add("has-splash");
+
+        const totalSplashTime = 3200;
+
+        setTimeout(() => {
+            splash.classList.add("splash--fade-out");
+
+            if (headerLogo) {
+                headerLogo.style.opacity = "1";
+                headerLogo.style.transform = "translateY(0)";
+            }
+
+            setTimeout(() => {
+                splash.classList.add("splash--hidden");
+                document.body.classList.remove("has-splash");
+            }, 600);
+        }, totalSplashTime);
+    })();
+
+    // Carousel produse noi (O SINGURĂ DATĂ)
+    (function () {
+        const track = document.getElementById("newProductsTrack");
+        if (!track) return;
+
+        const cards = track.querySelectorAll(".new-product-card");
+        const prevBtn = document.getElementById("prevNewProducts");
+        const nextBtn = document.getElementById("nextNewProducts");
+        if (!prevBtn || !nextBtn || cards.length === 0) return;
+
+        const visibleCardsDesktop = 4;
+        let index = 0;
+
+        function getVisibleCards() {
+            if (window.innerWidth <= 640) return 1;
+            if (window.innerWidth <= 900) return 2;
+            return visibleCardsDesktop;
+        }
+
+        function updateCarousel() {
+            const visible = getVisibleCards();
+            const maxIndex = Math.max(0, cards.length - visible);
+            if (index > maxIndex) index = maxIndex;
+            const translatePercent = (100 / visible) * index;
+            track.style.transform = `translateX(-${translatePercent}%)`;
+        }
+
+        prevBtn.addEventListener("click", () => {
+            const visible = getVisibleCards();
+            index = Math.max(0, index - visible);
+            updateCarousel();
+        });
+
+        nextBtn.addEventListener("click", () => {
+            const visible = getVisibleCards();
+            index = Math.min(cards.length - visible, index + visible);
+            updateCarousel();
+        });
+
+        window.addEventListener("resize", updateCarousel);
+        updateCarousel();
+    })();
+
+    // Burger menu (O SINGURĂ DATĂ)
+    (function () {
+        const burger = document.getElementById("burgerBtn");
+        const headerNav = document.querySelector(".header-bottom");
+        if (!burger || !headerNav) return;
+
+        burger.addEventListener("click", () => {
+            const isOpen = headerNav.classList.toggle("is-open");
+            burger.classList.toggle("is-open", isOpen);
+            document.body.classList.toggle("nav-open", isOpen);
+        });
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 640 && headerNav.classList.contains("is-open")) {
+                headerNav.classList.remove("is-open");
+                burger.classList.remove("is-open");
+                document.body.classList.remove("nav-open");
+            }
+        });
+    })();
+</script>
 
 </body>
 </html>

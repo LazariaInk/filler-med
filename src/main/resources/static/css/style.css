@@ -670,6 +670,7 @@
   }
 
   .footer-social-inner {
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       gap: 0.75rem;
@@ -1317,6 +1318,12 @@
     text-align:center;
   }
   .btn-view:hover{ background:#fdf2fb; }
+
+@media (max-width: 640px) {
+  .burger { display: inline-flex; }
+  .header-bottom { display: none; }
+  .header-bottom.is-open { display: flex; }
+}
 
 
 

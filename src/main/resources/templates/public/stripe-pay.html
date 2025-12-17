@@ -3,9 +3,61 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Politica de retur - Fillermed</title>
+    <title>Plată cu card | Fillermed</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://js.stripe.com/v3/"></script>
+
     <style>
+        .pay-page{ padding: 1.25rem 0 2rem; }
+        .pay-shell{
+          display:grid;
+          grid-template-columns: 1fr 0.38fr;
+          gap: 1rem;
+          align-items:start;
+        }
+        .card{
+          background: var(--card-bg);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 6px 18px rgba(15,23,42,.08);
+          padding: 1rem;
+        }
+        .card h1{ margin:0 0 .75rem; font-size:1.35rem; font-weight:900; }
+        .card h2{ margin:0 0 .75rem; font-size:1.05rem; font-weight:900; }
+        .note{ margin:.75rem 0 0; color: var(--muted); font-size:.9rem; line-height:1.5; }
+
+        .stripe-box{
+          padding: .9rem;
+          border: 1px solid #e5e7eb;
+          background: linear-gradient(180deg, #ffffff, #f9fafb);
+        }
+
+        .btn-primary-cart{
+          width:100%;
+          padding:.85rem 1rem;
+          border:none;
+          background: var(--primary);
+          color:#fff;
+          font-weight:900;
+          cursor:pointer;
+          box-shadow: 0 12px 30px rgba(234,90,202,.25);
+          text-align:center;
+          display:block;
+          margin-top:.8rem;
+        }
+        .btn-primary-cart:hover{ background: var(--primary-dark); }
+
+        .sum{
+          display:flex;
+          justify-content:space-between;
+          margin:.45rem 0;
+          font-weight:800;
+        }
+
+        #msg{ margin-top:.7rem; color: var(--muted); font-size:.95rem; }
+
+        @media (max-width: 900px){
+          .pay-shell{ grid-template-columns: 1fr; }
+        }
         @media (max-width: 640px) {
   .logo-img {
     opacity: 1;
@@ -25,63 +77,87 @@
 
 <div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
 
-<main>
-    <section class="legal-hero">
-        <div class="container">
-            <h1 class="legal-title">Politica de retur</h1>
-            <p class="legal-subtitle">
-                Informații importante despre condițiile de retur și produse neconforme.
-            </p>
+<main class="pay-page">
+    <div class="container">
+
+        <div style="font-size:.85rem; color: var(--muted); margin: .25rem 0 1rem;">
+            <a th:href="@{/}">Acasă</a> / <a th:href="@{/checkout}">Checkout</a> / <span>Plată cu card</span>
         </div>
-    </section>
 
-    <section class="section">
-        <div class="container legal-wrap">
-            <article class="legal-card">
-                <p>
-                    Produsele comercializate pe site-ul nostru nu fac obiectul returului, conform legislației în vigoare și
-                    politicii interne a companiei. Având în vedere natura produselor comercializate, returnarea acestora
-                    nu este permisă din motive de protecție a sănătății publice și igienă, conform art. 16 lit. e) din
-                    O.U.G. nr. 34/2014.
-                </p>
+        <div class="pay-shell">
+            <section class="card">
+                <h1>Plată securizată cu card</h1>
 
-                <p>
-                    Prin plasarea unei comenzi, clientul își asumă responsabilitatea integrală de a verifica în prealabil
-                    toate informațiile privind produsul: descrierea completă, compoziția, caracteristicile, modul de
-                    utilizare și eventualele contraindicații. Finalizarea comenzii reprezintă acordul expres al clientului
-                    privind achiziția produselor selectate, fără posibilitatea de retur.
-                </p>
+                <div class="stripe-box">
+                    <div id="payment-element"></div>
 
-                <p>
-                    Returnarea produselor nu este acceptată din motive ce țin de preferințe personale sau de neglijența
-                    clientului în completarea datelor de livrare ori în respectarea instrucțiunilor de utilizare.
-                </p>
+                    <button id="payBtn" class="btn-primary-cart" type="button">
+                        Plătește acum
+                    </button>
 
-                <div class="legal-callout">
-                    <h3>Produs neconform la livrare</h3>
-                    <p>
-                        Dacă produsul primit este neconform în momentul livrării, clientul are obligația de a sesiza acest
-                        aspect în termen de <strong>24 de ore</strong> de la primirea coletului, prin e-mail sau telefon,
-                        însoțit de fotografii relevante. Sesizările după acest termen nu pot fi luate în considerare.
-                    </p>
+                    <div id="msg">Introdu datele cardului pentru a finaliza plata.</div>
                 </div>
 
-                <p>
-                    Ne rezervăm dreptul de a refuza primirea oricărui colet returnat fără acordul nostru scris.
+                <p class="note">
+                    Dacă închizi pagina înainte de confirmare, comanda va rămâne în așteptare până când plata e confirmată.
                 </p>
+            </section>
 
-                <p>
-                    Prin finalizarea comenzii, clientul confirmă că a citit, înțeles și acceptat prezenta politică de retur,
-                    asumându-și pe deplin răspunderea pentru alegerea produselor comandate și pentru respectarea instrucțiunilor
-                    de utilizare furnizate de producător.
-                </p>
-            </article>
+            <aside class="card">
+                <h2>Sumar comandă</h2>
+
+                <div class="sum">
+                    <span>ID comandă</span>
+                    <span th:text="${orderId}">0</span>
+                </div>
+
+                <div class="sum">
+                    <span>Total</span>
+                    <span><span th:text="${cart != null ? cart.totalAmount : 0}">0</span> RON</span>
+                </div>
+
+                <a class="btn-view" th:href="@{/checkout}" style="display:block; text-align:center; margin-top:.8rem;">
+                    Înapoi la checkout
+                </a>
+            </aside>
         </div>
-    </section>
+
+    </div>
 </main>
 
 <div th:replace="~{public/fragments/layout :: siteFooter}"></div>
 <div th:replace="~{public/fragments/layout :: siteScripts}"></div>
+
+<script th:inline="javascript">
+    const clientSecret = [[${clientSecret}]];
+    const orderId = [[${orderId}]];
+    const stripePk = [[${stripePk}]];
+
+    const stripe = Stripe(stripePk);
+    const elements = stripe.elements({ clientSecret });
+    const paymentElement = elements.create("payment");
+    paymentElement.mount("#payment-element");
+
+    const msg = document.getElementById("msg");
+    const btn = document.getElementById("payBtn");
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      msg.textContent = "Se procesează...";
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: window.location.origin + "/order/thank-you?orderId=" + orderId
+        }
+      });
+
+      if (error) {
+        msg.textContent = error.message || "Eroare la plată.";
+        btn.disabled = false;
+      }
+    });
+</script>
 <script>
     // Splash (O SINGURĂ DATĂ)
     (function () {

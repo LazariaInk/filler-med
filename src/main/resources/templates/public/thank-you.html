@@ -1,55 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <title>Despre noi | Fillermed</title>
-    <meta name="description"
-          content="Fillermed este un magazin online specializat în produse profesionale din industria estetică și a fillerelor dermice. Calitate, siguranță și livrare rapidă.">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Mulțumim | Fillermed</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
-<style>
-    .about-features {
-    margin-top: 2.5rem;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem;
-    justify-content: center;
-    text-align: center;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
-.about-feature {
-    padding: 1.5rem 1.25rem;
-}
-
-.about-feature h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--primary);
-}
-
-.about-feature p {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #334155;
-}
-
-@media (max-width: 768px) {
-    .hero-subtitle {
-        font-size: 36px !important;
-        line-height: 1.25 !important;
-    }
-
-    .hero-content p {
-        font-size: 1rem !important;
-    }
-}
-
-    @media (max-width: 640px) {
+    <style>
+        .ty-page{ padding: 1.25rem 0 2rem; }
+        .card{
+          background: var(--card-bg);
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 10px 30px rgba(15,23,42,.08);
+          padding: 1.2rem;
+          max-width: 820px;
+          margin: 0 auto;
+          text-align:center;
+        }
+        .card h1{ margin:0 0 .4rem; font-size:1.55rem; font-weight:900; }
+        .muted{ color: var(--muted); line-height:1.55; margin:.35rem 0; }
+        .pill{
+          display:inline-flex;
+          align-items:center;
+          gap:.5rem;
+          padding:.4rem .7rem;
+          border:1px solid #e5e7eb;
+          background:#f9fafb;
+          font-weight:900;
+          margin:.7rem 0 0;
+        }
+        .actions{
+          display:flex;
+          justify-content:center;
+          gap:.6rem;
+          flex-wrap:wrap;
+          margin-top:1rem;
+        }
+        @media (max-width: 640px) {
   .logo-img {
     opacity: 1;
     transform: translateY(0);
@@ -62,79 +49,43 @@
     transform: translateY(-10px);
   }
 }
-
-</style>
+    </style>
+</head>
 <body>
 
 <div th:replace="~{public/fragments/layout :: siteHeader(${cart})}"></div>
 
-<section class="hero">
-    <div class="hero-inner" style="background-image:url('/images/hero.jpeg')">
-        <div class="hero-overlay"></div>
-
-        <div class="container hero-content" style="align-items:center; text-align:center;">
-            <h1 class="hero-subtitle" style="
-    max-width: 900px;
-    font-size: 64px;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-">
-                Despre <span>Fillermed</span>
-            </h1>
-
-            <p style="
-    color:#ffffff;
-    font-size:1.25rem;
-    max-width:900px;
-    line-height:1.75;
-    margin-top:1rem;
-    opacity:0.98;
-">
-                Fillermed este un magazin online dedicat profesioniștilor din domeniul
-                esteticii medicale, oferind produse premium utilizate în proceduri
-                minim invazive, precum fillere dermice și consumabile asociate.
-            </p>
-
-            <p style="
-    color:#ffffff;
-    font-size:1.1rem;
-    max-width:900px;
-    line-height:1.7;
-    margin-top:0.75rem;
-    opacity:0.92;
-">
-                Lucrăm exclusiv cu furnizori autorizați, respectând standardele europene
-                de calitate, siguranță și conformitate.
-            </p>
-        </div>
-    </div>
-</section>
-
-
-<section class="section" style="background:#ffffff;">
+<main class="ty-page">
     <div class="container">
-        <h2 class="section-title-center">
-            De ce <span>Fillermed</span>?
-        </h2>
 
-        <div class="about-features">
-            <div class="about-feature">
-                <h3>Produse originale</h3>
-                <p>Lucrăm exclusiv cu distribuitori autorizați și branduri verificate.</p>
+        <div style="font-size:.85rem; color: var(--muted); margin: .25rem 0 1rem;">
+            <a th:href="@{/}">Acasă</a> / <span>Mulțumim</span>
+        </div>
+
+        <div class="card">
+            <h1>Mulțumim! 🎉</h1>
+            <p class="muted">
+                Comanda ta a fost înregistrată cu succes.
+            </p>
+
+            <div class="pill">
+                ID comandă: <span th:text="${orderId}">0</span>
             </div>
 
-            <div class="about-feature">
-                <h3>Siguranță & conformitate</h3>
-                <p>Toate produsele respectă standardele europene și sunt destinate uzului profesional.</p>
-            </div>
+            <p class="muted" style="margin-top:.75rem;">
+                Vei vedea statusul în admin: dacă este <b>plătită</b> (Stripe) sau <b>cash la livrare</b> (COD).
+            </p>
 
-            <div class="about-feature">
-                <h3>Livrare rapidă</h3>
-                <p>Procesăm comenzile eficient pentru livrare rapidă și sigură.</p>
+            <div class="actions">
+                <a class="btn-view" th:href="@{/produse}" style="min-width:220px; text-align:center;">Înapoi la produse</a>
+                <a class="btn-add-cart" th:href="@{/}" style="min-width:220px; text-align:center; display:inline-flex; justify-content:center;">
+                    Acasă
+                </a>
             </div>
         </div>
+
     </div>
-</section>
+</main>
 
 <div th:replace="~{public/fragments/layout :: siteFooter}"></div>
 <div th:replace="~{public/fragments/layout :: siteScripts}"></div>

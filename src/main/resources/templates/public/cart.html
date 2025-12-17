@@ -69,6 +69,19 @@
           .cart-row{ grid-template-columns: 84px 1fr; }
           .cart-row > .qty{ grid-column: 1 / -1; justify-content:flex-start; }
         }
+        @media (max-width: 640px) {
+  .logo-img {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  /* ascundem doar când splash-ul e activ */
+  body.has-splash .logo-img {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
     </style>
 </head>
 <body>
